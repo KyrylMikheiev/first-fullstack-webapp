@@ -132,7 +132,7 @@ router.post("/registration/verification", async(req, res) => {
             if (user.otp.toString() === code.toString()) {
                 user.verified = true
                 console.log("Successfully verified")
-                res.redirect(`/registration/lastStep?email=${email}`)
+                res.redirect(`/registration/lastStep?email=${encodeURIComponent(email)}`)
             } else {
                 res.send("wrong otp, try again")
             }
