@@ -47,8 +47,8 @@ inputs.addEventListener("keydown", function (e) {
     }
 });
 
-
-// const form = document.querySelector("form") 
+const form = document.querySelector("form") 
+form.action = "/api" + window.location.pathname + window.location.search 
 
 // form.addEventListener("submit", async () => {
 //     let userInputCode = ""
