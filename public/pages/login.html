@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+<body>
+    <form action="/api/dashboard" method="get" id="form"> 
+        <h1>Login</h1>
+        <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email">
+            <p id="email-error"></p>
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password">
+            <p id="password-error"></p>
+        </div>
+        <div id="error"></div>
+        <button type="submit" id="submit" style="width: 100%;">To Login</button>
+        <div class="button-wrapper">
+            <a href="/">To Main Menu</a>
+            <a href="/forgot-password">Forgot Password?</a>
+        </div>
+    </form>
+</body>
+</html>

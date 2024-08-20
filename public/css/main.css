@@ -1,0 +1,50 @@
+*, *::after, *::before {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    border: none;
+}
+
+body {
+    height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: black;
+    color: white;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.reg-log {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 5rem;
+    gap: 2rem;
+}
+
+button, a {
+    text-align: center;
+    font-size: 14px;
+    background-color: transparent;
+    border-radius: 0.5rem;
+    padding: .75rem 1.5rem;
+    border: 3px solid green;
+    color: white;
+    text-decoration: none;
+}
+
+button:hover,
+a:hover,
+button:focus-visible,
+a:focus-visible {
+    background-color: greenyellow;
+    color: black;
+}
+
+a {
+    white-space: nowrap;
+}
