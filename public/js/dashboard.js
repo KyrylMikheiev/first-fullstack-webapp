@@ -50,7 +50,7 @@ getUsersButton.addEventListener("click", async () => {
     }
 })
 async function getUsers() {
-    await fetch("http://localhost:4000/api/dashboard")
+    await fetch("http://localhost:4000/api/users")
         .then((res) => res.json())
         .then((data) => {
             if (data.length !== 0) {

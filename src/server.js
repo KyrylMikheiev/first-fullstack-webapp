@@ -23,11 +23,13 @@ app.use(express.json()) //we can use json format
 //routes
 const registrationRouter = require("./routes/registration")
 const dashboardRouter = require("./routes/dashboard")
-const apiDashboardRouter = require("./routes/apiDashboard")
+// const apiDashboardRouter = require("./routes/apiDashboard")
 const loginRouter = require("./routes/login")
+const apiRouter = require("./api/api")
 
 app.use("/registration", registrationRouter)
-app.use("/api/dashboard", apiDashboardRouter)
+// app.use("/api/dashboard", apiDashboardRouter)
+app.use("/api", apiRouter)
 app.use("/dashboard", dashboardRouter)
 app.use("/login", loginRouter)
 

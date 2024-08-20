@@ -5,66 +5,6 @@ const nodemailer = require("nodemailer")
 const Mailgen = require("mailgen")
 
 router.post("/", async (req, res) => {
-
-    const userEmail = req.body.email
-    const { name } = req.body
-    
-    let MailGenerator = new Mailgen({
-        theme: "default",
-        product: {
-            name: "Mailgen",
-            link: "https://mailgen.js/"
-        }
-    })
-    
-    let response = {
-        body: {
-            name: name,
-            intro: "Your verification code",
-            //example
-            h1: sendOTP(),
-            table: {
-                data: [
-                    {
-                        item: "Nodemailer Stack Book",
-                        description: sendOTP(),
-                    }
-                ]
-            },
-            outro: "Looking forward to do more business" 
-        }
-    }
-    
-    let mail = MailGenerator.generate(response) //generates an email based on object "response"
-    
-    let message = {
-        from: process.env.EMAIL,
-        to: userEmail,
-        subject: "place order",
-        html: mail
-    }
-    
-    let config = {
-        service: "gmail",
-        auth: {
-            user: process.env.EMAIL,
-            pass: process.env.PASSWORD
-        }
-    }
-
-    let transporter = nodemailer.createTransport(config)
-    
-    transporter.sendMail(message)
-        .then(() => {
-            return res.redirect("/registration/verification")
-            // res.status(201).json({
-            //     msg: "you should have received an email"
-            // })
-        })
-        .catch((error) => {
-            return res.status(500).json({error})
-        })
-
     // //get an email
     // const { email } = req.body
     // //send a verification code (otp)
@@ -129,12 +69,5 @@ router.delete("/:name", async (req, res) => { //change to username
         res.json({message: error})
     }
 })
-
-//not secure, possibility that user enters one wrong digit/the same otp. For now it is okay
-function sendOTP(email) {
-    const date = Date.now()
-    const pin = date.toString().slice(-6)
-    return pin
-}
 
 module.exports = router
