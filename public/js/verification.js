@@ -47,6 +47,18 @@ inputs.addEventListener("keydown", function (e) {
     }
 });
 
+inputs.addEventListener("paste", function (e) {
+    const pasteData = e.clipboardData.getData('text');
+    if (pasteData.length === 6 && !isNaN(pasteData)) {
+        const inputElements = inputs.querySelectorAll("input");
+        inputElements.forEach((input, index) => {
+            input.value = pasteData[index] || '';
+        });
+        inputElements[5].focus();  // Move focus to the last input after pasting
+    }
+    e.preventDefault();  // Prevent the default paste behavior
+});
+
 const form = document.querySelector("form") 
 form.action = "/api" + window.location.pathname + window.location.search 
 

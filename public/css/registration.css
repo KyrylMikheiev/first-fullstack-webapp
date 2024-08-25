@@ -42,6 +42,10 @@ input:user-valid {
     border-color: green;
 }
 
+input:hover, input:focus {
+    border-color: rgb(221, 187, 252);
+}
+
 
 p {
     font-size: small;

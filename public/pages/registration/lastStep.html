@@ -5,22 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Last Step</title>
     <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/registration.css">
     <link rel="stylesheet" href="/css/lastStep.css">
-    <script defer scr="/js/lastStep.js"></script>
+    <script defer src="/js/lastStep.js"></script>
 </head>
 <body>
-    <form action="">
-        <h1>Dont worry, only the last step is left, g</h1>
+    <h1>Dont worry, only the last step is left, g</h1>
+    <form method="POST">
+        <div>
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name">
+        </div>
+        <p id="name-error"></p>
+        <div>
+            <label for="birthday">Date of birth</label>
+            <input type="date" id="birthday" name="birthday">
+        </div>
+        <p id="date-of-birth-error"></p>
         <div>
             <label for="username">Username</label>
             <input type="text" id="username" name="username">
-            <p id="username-error"></p>
         </div>
+        <p id="username-error"></p>
         <div>
             <label for="password">Password</label>
             <input type="password" id="password" name="password" minlength="10">
-            <p id="password-error"></p>
         </div>
+        <p id="password-error"></p>
+        <button type="submit" id="submit" style="width: 100%;">Submit</button>
     </form>
 </body>
 </html>

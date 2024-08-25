@@ -37,7 +37,7 @@ getUsersButton.addEventListener("click", async () => {
         const tableRows = document.querySelectorAll("[data-href]")
         tableRows.forEach(row => {
             row.addEventListener("click", () => {
-                window.location.href += row.dataset.href
+                window.location.pathname = `/users/${row.dataset.href}`
                 console.log("clicked")
             })
         })
@@ -57,7 +57,7 @@ async function getUsers() {
                 data.map((user) => {
                     if (user._id) {
                         userInfoElement.innerHTML += `
-                                <tr data-href="/@${user.name}">
+                                <tr data-href="@${user.name}">
                                     <td>${user._id}</td>
                                     <td>${user.name}</td>
                                     <td>${user.email}</td>

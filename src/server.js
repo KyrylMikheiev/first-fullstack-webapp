@@ -28,14 +28,16 @@ const loginRouter = require("./routes/login")
 const apiRouter = require("./api/api")
 
 app.use("/registration", registrationRouter)
-// app.use("/api/dashboard", apiDashboardRouter)
-app.use("/api", apiRouter)
 app.use("/dashboard", dashboardRouter)
 app.use("/login", loginRouter)
+app.use("/api", apiRouter)
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "../public/pages/index.html"))
 })
 
+app.get("/users/:username", (req, res) => {
+    res.sendFile(path.join(__dirname, "../public/pages/user.html"))
+})
 app.listen(port, () => console.log(`Server has started on port: ${port}`))
 

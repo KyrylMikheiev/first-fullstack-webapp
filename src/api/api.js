@@ -1,12 +1,13 @@
 const express = require("express")
-const router = express.Router()
-const User = require("../models/user")
 const nodemailer = require("nodemailer")
 const Mailgen = require("mailgen")
-const UnverifiedUser = require("../models/unverifiedUser")
 const path = require("path")
-const fs = require('fs');
+const bcrypt = require("bcrypt")
+// const fs = require('fs');
+const User = require("../models/user")
+const UnverifiedUser = require("../models/unverifiedUser")
 
+const router = express.Router()
 /**
  * ToDos:
  * - split in seperate files api
@@ -17,6 +18,19 @@ router.post("/registration", async (req, res) => {
     const userEmail = req.body.email
     const { name } = req.body
     const otpCode = generateOTP()
+
+   
+
+    // var mailGenerator = new Mailgen({
+    //     theme: {
+    //         // Build an absolute path to the theme file within your project
+    //         path: path.resolve('assets/mailgen/theme.html'),
+    //         // Also (optionally) provide the path to a plaintext version of the theme (if you wish to use `generatePlaintext()`)
+    //         plaintextPath: path.resolve('assets/mailgen/theme.txt')
+    //     },
+    //     // Configure your product as usual (see examples above)
+    //     product: {}
+    // });
     
     let MailGenerator = new Mailgen({
         theme: "default",
@@ -45,7 +59,7 @@ router.post("/registration", async (req, res) => {
     
     let mail = MailGenerator.generate(response) //generates an email based on object "response"
 
-    const emailTemplate = fs.readFileSync(path.join(__dirname, "../emails/otp.html"))
+    // const emailTemplate = fs.readFileSync(path.join(__dirname, "../emails/otp.html"))
     
     let message = {
         from: process.env.EMAIL,
@@ -63,47 +77,74 @@ router.post("/registration", async (req, res) => {
     }
 
     let transporter = nodemailer.createTransport(config)
-    
-    transporter.sendMail(message)
-        .then(async() => {
-            try {
-                const oldUser = await UnverifiedUser.findOne({email: userEmail})
-                if (oldUser) {
-                    if (!oldUser.verified) {
-                        oldUser.otp = otpCode
-                        oldUser.codeCreationDate = Date.now()
-                        oldUser.codeExpirationDate = Date.now() + 10 * 60 * 1000
-                        await oldUser.save()
-                    } else {
-                        return res.send("User with this email is already verified. Log in")
-                    }
-                } else {
-                    const userCreation = new UnverifiedUser({
-                        email: userEmail,
-                        verified: false,
-                        otp: otpCode,
-                    })
-                    await userCreation.save()
-                }
-                const encodedEmail = encodeURIComponent(userEmail);
-                return res.redirect(`/registration/verification?email=${encodedEmail}`);
-            } catch (error) {
-                res.json({ msg: error})
+
+    try {
+        const oldUser = await UnverifiedUser.findOne({email: userEmail})
+        if (oldUser) {
+            if (!oldUser.verified) {
+                oldUser.otp = otpCode
+                oldUser.codeCreationDate = Date.now()
+                oldUser.codeExpirationDate = Date.now() + 10 * 60 * 1000
+                await oldUser.save()
+            } else {
+                return res.send("User with this email is already verified. Log in")
             }
-            // res.status(201).json({
-            //     msg: "you should have received an email"
-            // })
-        })
-        .catch((error) => {
-            return res.status(500).json({error})
-        })
+        } else {
+            const userCreation = new UnverifiedUser({
+                email: userEmail,
+                verified: false,
+                otp: otpCode,
+            })
+            await userCreation.save()
+        }
+        await transporter.sendMail(message)
+        console.log("Email was send to the user")
+        const encodedEmail = encodeURIComponent(userEmail);
+        return res.redirect(`/registration/verification?email=${encodedEmail}`);
+    } catch (error) {
+        res.json({ msg: error})
+    }    
+    
+    // transporter.sendMail(message)
+    //     .then(async() => {
+    //         try {
+    //             const oldUser = await UnverifiedUser.findOne({email: userEmail})
+    //             if (oldUser) {
+    //                 if (!oldUser.verified) {
+    //                     oldUser.otp = otpCode
+    //                     oldUser.codeCreationDate = Date.now()
+    //                     oldUser.codeExpirationDate = Date.now() + 10 * 60 * 1000
+    //                     await oldUser.save()
+    //                 } else {
+    //                     return res.send("User with this email is already verified. Log in")
+    //                 }
+    //             } else {
+    //                 const userCreation = new UnverifiedUser({
+    //                     email: userEmail,
+    //                     verified: false,
+    //                     otp: otpCode,
+    //                 })
+    //                 await userCreation.save()
+    //             }
+    //             const encodedEmail = encodeURIComponent(userEmail);
+    //             return res.redirect(`/registration/verification?email=${encodedEmail}`);
+    //         } catch (error) {
+    //             res.json({ msg: error})
+    //         }
+    //         // res.status(201).json({
+    //         //     msg: "you should have received an email"
+    //         // })
+    //     })
+    //     .catch((error) => {
+    //         return res.status(500).json({error})
+    //     })
 }) 
 
 router.post("/registration/verification", async(req, res) => {
 
     const encodedEmail = req.query.email
     const email = decodeURIComponent(encodedEmail)
-    //wtf
+    //wtf ------------------------------------------------ get it right g ------------------------------
     const codeInput1 = req.body.input1
     const codeInput2 = req.body.input2
     const codeInput3 = req.body.input3
@@ -145,6 +186,38 @@ router.post("/registration/verification", async(req, res) => {
     }
 })
 
+router.post("/registration/lastStep", async (req, res) => {
+    const { email } = req.query
+    const userEmail = decodeURIComponent(email)
+    try {
+        const isUsernameValid = await User.findOne({ username: req.body.username})
+        if (isUsernameValid) {
+            return res.send("User with this username already exists. Try another one...")
+        }
+        console.log("User with this username doesnt exist yet, so it is possible to create one")
+        const password = req.body.password
+        const hashedPassword = await bcrypt.hash(password, 10)
+        console.log("password has been hashed")
+        const user = new User({
+            email: userEmail,
+            name: req.body.name,
+            dateOfBirth: req.body.birthday,
+            username: req.body.username,
+            password: hashedPassword,
+        })
+        console.log("We created new user")
+        const newUser = await user.save()
+        console.log("successfully registered")
+        const userFromUnverifiedDatabase = await UnverifiedUser.findOne({ email: userEmail})
+        userFromUnverifiedDatabase.verified = true
+        await userFromUnverifiedDatabase.save()
+        console.log("user from unverified database got a property of verified ")
+        res.redirect("/dashboard")
+    } catch (error) {
+        res.send(error)
+    }
+})
+
 router.get("/users", async (req, res) => {
     try {
         const users = await User.find()
@@ -155,9 +228,9 @@ router.get("/users", async (req, res) => {
     }
 })
 
-router.get("users/:name", async (req, res) => { //change to username
+router.get("/users/:name", async (req, res) => { //change to username
     const { name } = req.params
-    userName = name.replace("@", "")
+    const userName = name.replace("@", "")
     try {
         const user = await User.findOne({ "name": userName })
         res.json(user)
@@ -165,7 +238,7 @@ router.get("users/:name", async (req, res) => { //change to username
         console.log(error)
     }
 })
-router.delete("users/:name", async (req, res) => { //change to username
+router.delete("/users/:name", async (req, res) => { //change to username
     const { name } = req.params
     const userName = name.replace("@", "")
     try {
