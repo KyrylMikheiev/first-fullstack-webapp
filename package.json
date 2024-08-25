@@ -1,7 +1,7 @@
 {
   "name": "first-fullstack-webapp",
   "version": "1.0.0",
-  "main": "src/server.js",
+  "main": "server/server.js",
   "scripts": {
     "devStart": "nodemon server.js"
   },

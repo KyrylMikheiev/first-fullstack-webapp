@@ -4,8 +4,8 @@ const Mailgen = require("mailgen")
 const path = require("path")
 const bcrypt = require("bcrypt")
 // const fs = require('fs');
-const User = require("../models/user")
-const UnverifiedUser = require("../models/unverifiedUser")
+const User = require("../../models/user")
+const UnverifiedUser = require("../../models/unverifiedUser")
 
 const router = express.Router()
 /**
@@ -13,7 +13,7 @@ const router = express.Router()
  * - split in seperate files api
  * - styling for email
  */
-router.post("/registration", async (req, res) => {
+router.post("/", async (req, res) => {
     
     const userEmail = req.body.email
     const { name } = req.body
@@ -104,43 +104,9 @@ router.post("/registration", async (req, res) => {
     } catch (error) {
         res.json({ msg: error})
     }    
-    
-    // transporter.sendMail(message)
-    //     .then(async() => {
-    //         try {
-    //             const oldUser = await UnverifiedUser.findOne({email: userEmail})
-    //             if (oldUser) {
-    //                 if (!oldUser.verified) {
-    //                     oldUser.otp = otpCode
-    //                     oldUser.codeCreationDate = Date.now()
-    //                     oldUser.codeExpirationDate = Date.now() + 10 * 60 * 1000
-    //                     await oldUser.save()
-    //                 } else {
-    //                     return res.send("User with this email is already verified. Log in")
-    //                 }
-    //             } else {
-    //                 const userCreation = new UnverifiedUser({
-    //                     email: userEmail,
-    //                     verified: false,
-    //                     otp: otpCode,
-    //                 })
-    //                 await userCreation.save()
-    //             }
-    //             const encodedEmail = encodeURIComponent(userEmail);
-    //             return res.redirect(`/registration/verification?email=${encodedEmail}`);
-    //         } catch (error) {
-    //             res.json({ msg: error})
-    //         }
-    //         // res.status(201).json({
-    //         //     msg: "you should have received an email"
-    //         // })
-    //     })
-    //     .catch((error) => {
-    //         return res.status(500).json({error})
-    //     })
 }) 
 
-router.post("/registration/verification", async(req, res) => {
+router.post("/verification", async(req, res) => {
 
     const encodedEmail = req.query.email
     const email = decodeURIComponent(encodedEmail)
@@ -186,7 +152,7 @@ router.post("/registration/verification", async(req, res) => {
     }
 })
 
-router.post("/registration/lastStep", async (req, res) => {
+router.post("/lastStep", async (req, res) => {
     const { email } = req.query
     const userEmail = decodeURIComponent(email)
     try {
@@ -215,38 +181,6 @@ router.post("/registration/lastStep", async (req, res) => {
         res.redirect("/dashboard")
     } catch (error) {
         res.send(error)
-    }
-})
-
-router.get("/users", async (req, res) => {
-    try {
-        const users = await User.find()
-        res.send(users)
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({message: error.message})
-    }
-})
-
-router.get("/users/:name", async (req, res) => { //change to username
-    const { name } = req.params
-    const userName = name.replace("@", "")
-    try {
-        const user = await User.findOne({ "name": userName })
-        res.json(user)
-    } catch (error) {
-        console.log(error)
-    }
-})
-router.delete("/users/:name", async (req, res) => { //change to username
-    const { name } = req.params
-    const userName = name.replace("@", "")
-    try {
-        const user = await User.findOneAndDelete({ name: userName })
-        res.status(201).json({ message: "Successfully deleted" });
-    } catch (error) {
-        console.log("error in api")
-        res.json({message: error})
     }
 })
 
