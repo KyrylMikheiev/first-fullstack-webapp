@@ -1,11 +1,18 @@
 ## Goals
 Goals for this project were:
-✅ 1. to try node.js (some backend) 
+
+✅ 1. to try node.js (some backend)
+
 ✅ 2. Try to implement whole sign up and log in logic 
+
 ✅ 3. Add an ability of sending email code-verfications and approve right registration 
+
 ✅ 4. Understand how to work with databases (MongoDB) 
+
 ✅ 5. Design (all web-projects include some basic UI creation which boosts skills) 
+
 ✅ 6. APIs usage training
+
 
 And a lot more ...
 
@@ -40,5 +47,3 @@ Plans for next project:
 - only if you are an admin you can check the data
 - create better design
 - dont mess up with env this time (to not get exposed)
-- 
-
