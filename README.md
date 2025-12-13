@@ -48,3 +48,6 @@ Plans for next project:
 - only if you are an admin you can check the data
 - create better design
 - dont mess up with env this time (to not get exposed)
+
+## PS: (13.12.2025)
+I found out that really big update of this project hasnt been pushed to origin, so i did there. Huge refactoring has been made, cleaned code and i fixed some bugs. Thats why i changed a bit what i ahve written in 03.11.2025. Additionally i added video to help visualise, so that you dont need to clone this project.
