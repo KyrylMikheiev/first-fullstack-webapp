@@ -18,6 +18,10 @@ And a lot more ...
 
 This project can be extended massively and still has issues. May be later, as i will have some time, i will come back. Lets see...
 
+# How it looks like
+![Bildschirmaufnahme 2025-12-13 233751](https://github.com/user-attachments/assets/c3e39bd9-4d4b-4498-85a4-eec048446fda)
+
+
 ## UPD after a year (03.11.2025):
 Goals for this projects had been achieved (long time ago) and now comes feedback.
 
