@@ -23,22 +23,19 @@ Goals for this projects had been achieved (long time ago) and now comes feedback
 
 I decided to create similar project but from the very begining. Reasons for that:
 - vulnerabilities
-- bugs
 - bad practices
 - difficult to keep scaling the project
 - express.js is a framework based on another framework node.js
 - no type checking
 - some things that i just dont like (One Time Password has really bad design which is really hard to change because of it bolerplate for e commerce)
-- Accessesibility and security of data (everyone can see the data) (well should be seeing but there is some kind of bug)
+- Accessesibility and security of data (every user can see the data)
 - to much repeated code that cant be shortend (issue of framework?)
-- i forgot how to connect project to database because i used tutorials for that
-- bad code for frontend js (was written just to see quick result rather then stay clean)
 
 What i think was great about this project:
 - i got understanding how api works, how it used and written
 - i understood how you can work with database and its data (read, write, update, detele)
 - i trained my designing/css skills. Got really better with css
-- understood how important is that, to docement your code to be able to come back to it later
+- understood how important is that, to document your code to be able to come back to it later
 
 Plans for next project:
 - i am deciding which language/framework/library i gotta be using (i would like to get better in language i already know to deepen my knowledge (i already have too much projects in different languages)) 
