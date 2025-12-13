@@ -1,34 +1,37 @@
 const express = require("express")
+const router = express.Router()
+const User = require("../../models/user")
+const bcrypt = require("bcrypt")
 const nodemailer = require("nodemailer")
 const Mailgen = require("mailgen")
-const path = require("path")
-const bcrypt = require("bcrypt")
-// const fs = require('fs');
-const User = require("../../models/user")
-const UnverifiedUser = require("../../models/unverifiedUser")
 
-const router = express.Router()
-/**
- * ToDos:
- * - split in seperate files api
- * - styling for email
- */
-router.post("/", async (req, res) => {
-    
-    const userEmail = req.body.email
+router.post("/", async(req, res) => {
+    const { email } = req.body
+    const { password } = req.body
+
+    try {
+        const user = await User.findOne({ email: email})
+        if (user) {
+            const hashedPassword = user.password
+            if (await bcrypt.compare(password, hashedPassword)) {
+                console.log("Successfully logged in")
+                return res.redirect("/dashboard")
+            } else {
+                return res.send("wrong password, try again")
+            }
+        } else {
+            return res.send("There is no such user")
+        }
+    } catch (error) {
+        res.send(error)
+    }
+})
+
+router.post("/forgot-password", async(req, res) => {
+    const { email } = req.body
+    const userEmail = email
     const otpCode = generateOTP()
 
-    // var mailGenerator = new Mailgen({
-    //     theme: {
-    //         // Build an absolute path to the theme file within your project
-    //         path: path.resolve('assets/mailgen/theme.html'),
-    //         // Also (optionally) provide the path to a plaintext version of the theme (if you wish to use `generatePlaintext()`)
-    //         plaintextPath: path.resolve('assets/mailgen/theme.txt')
-    //     },
-    //     // Configure your product as usual (see examples above)
-    //     product: {}
-    // });
-    
     let MailGenerator = new Mailgen({
         theme: "cerberus",
         product: {
@@ -76,30 +79,21 @@ router.post("/", async (req, res) => {
     try {
         const oldUser = await UnverifiedUser.findOne({email: userEmail})
         if (oldUser) {
-            if (!oldUser.verified) {
                 oldUser.otp = otpCode
                 oldUser.codeCreationDate = Date.now()
                 oldUser.codeExpirationDate = Date.now() + 10 * 60 * 1000
                 await oldUser.save()
-            } else {
-                return res.send("User with this email is already verified. Log in")
-            }
         } else {
-            const userCreation = new UnverifiedUser({
-                email: userEmail,
-                verified: false,
-                otp: otpCode,
-            })
-            await userCreation.save()
+            return res.send("There is no such user")
         }
         await transporter.sendMail(message)
-        console.log("Email was send to the user")
+        console.log("Email (forgot password) was send to the user")
         const encodedEmail = encodeURIComponent(userEmail);
-        return res.redirect(`/registration/verification?email=${encodedEmail}`);
+        return res.redirect(`/login/verification?email=${encodedEmail}`);
     } catch (error) {
-        res.json({ msg: error})
-    }    
-}) 
+        res.send(error)
+    }
+})
 
 router.post("/verification", async(req, res) => {
 
@@ -118,15 +112,14 @@ router.post("/verification", async(req, res) => {
         const user = await UnverifiedUser.findOne({ "email": email })
         console.log(code.toString())
         console.log(user.otp.toString())
-        if (user) { 
             // console.log("Expiration date", user.codeExpirationDate.getTime())
             // console.log("now", Date.now())
             if (user.codeExpirationDate.getTime() > Date.now()) {
                 if (user.otp.toString() === code.toString()) {
                     // user.verified = true
                     // await user.save()
-                    console.log("Successfully verified")
-                    res.redirect(`/registration/lastStep?email=${encodeURIComponent(email)}`)
+                    console.log("Inputed OTP was right, allowed to change password")
+                    res.redirect(`/login/change-password?email=${encodeURIComponent(email)}`)
                 } else {
                     res.send("wrong otp, try again")
                 }
@@ -139,47 +132,17 @@ router.post("/verification", async(req, res) => {
                 // console.log(user)
                 res.send("Your code has been expired. Try to resend!")
             }
-        } else {
-            res.status(404).send("you have skipped registration step, please try again")
-        }
+        
     } catch (error) {
         res.status(404).send(error)
     }
 })
 
-router.post("/lastStep", async (req, res) => {
-    const { email } = req.query
-    const userEmail = decodeURIComponent(email)
-    try {
-        const isUsernameValid = await User.findOne({ username: req.body.username})
-        if (isUsernameValid) {
-            return res.send("User with this username already exists. Try another one...")
-        }
-        // console.log("User with this username doesnt exist yet, so it is possible to create one")
-        const password = req.body.password
-        const hashedPassword = await bcrypt.hash(password, 10)
-        // console.log("password has been hashed")
-        const user = new User({
-            email: userEmail,
-            name: req.body.name,
-            dateOfBirth: req.body.birthday,
-            username: req.body.username,
-            password: hashedPassword,
-        })
-        // console.log("We created new user")
-        const newUser = await user.save()
-        // console.log("successfully registered")
-        const userFromUnverifiedDatabase = await UnverifiedUser.findOne({ email: userEmail})
-        userFromUnverifiedDatabase.verified = true
-        await userFromUnverifiedDatabase.save()
-        // console.log("user from unverified database got a property of verified ")
-        res.redirect("/dashboard")
-    } catch (error) {
-        res.send(error)
-    }
+router.post("/change-password", (req, res) => {
+    res.send("Perfect")
 })
 
-//not secure, possibility that user enters one wrong digit/the same otp. For now it is okay
+
 function generateOTP() {
     const date = Date.now()
     const pin = date.toString().slice(-6)

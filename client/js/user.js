@@ -5,7 +5,7 @@ const dialogElement = document.querySelector("dialog")
 const openDeleteMenu = document.getElementById("openDeleteMenu")
 const deleteButton = document.getElementById("deleteButton") 
 const cancelButton = document.getElementById("cancelButton")
-const url = `http://localhost:4000/api${window.location.pathname}`
+const url = `http://localhost:4010/api${window.location.pathname}`
 
 fetch(url)
     .then(response => response.json())

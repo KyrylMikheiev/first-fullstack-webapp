@@ -50,12 +50,13 @@ getUsersButton.addEventListener("click", async () => {
     }
 })
 async function getUsers() {
-    await fetch("http://localhost:4000/api/users")
+    await fetch("http://localhost:4010/api/users")
         .then((res) => res.json())
         .then((data) => {
             if (data.length !== 0) {
                 data.map((user) => {
                     if (user._id) {
+                        console.log("geklappt")
                         userInfoElement.innerHTML += `
                                 <tr data-href="@${user.name}">
                                     <td>${user._id}</td>
@@ -66,7 +67,7 @@ async function getUsers() {
                     } 
                 })
             } else {
-                // console.log("get users false")
+                console.log("get users false")
                 return false
             }
         })
