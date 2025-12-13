@@ -1,0 +1,54 @@
+/registration-login-verification
+│
+├── /client
+│   ├── /css
+│   │   └── styles.css        # Main CSS file
+│   ├── /js
+│   │   └── scripts.js        # Main JavaScript file
+│   ├── /images               # Any images used in the frontend
+│   ├── /pages
+│   │   ├── index.html        # Home page
+│   │   ├── register.html     # Registration page
+│   │   ├── login.html        # Login page
+│   │   ├── verify.html       # Email verification page
+│   │   └── reset_password.html # Password reset page
+│   ├── /components           # Reusable HTML components
+│   │   └── header.html       # Example of a reusable header
+│   └── /api                  # Frontend calls to API endpoints
+│       └── apiClient.js      # JavaScript file to handle API requests (e.g., using Fetch API)
+│
+├── /server
+│   ├── /config
+│   │   ├── db.js             # Database configuration (e.g., MongoDB, MySQL)
+│   │   └── mailer.js         # Nodemailer configuration
+│   ├── /controllers
+│   │   ├── authController.js # Handles registration, login, logout, etc.
+│   │   └── userController.js # Handles user-related actions (e.g., profile, verification)
+│   ├── /models
+│   │   └── User.js           # User model/schema (e.g., for MongoDB)
+│   ├── /routes
+│   │   ├── /api              # API-specific routes
+│   │   │   ├── users.js      # API routes related to users (e.g., /api/users/:username)
+│   │   │   └── auth.js       # API routes related to authentication (e.g., /api/auth/login)
+│   │   └── web.js            # Routes for serving web pages (e.g., /register, /login)
+│   ├── /middlewares
+│   │   └── authMiddleware.js # Middleware for protected routes (e.g., JWT verification)
+│   ├── /utils
+│   │   ├── generateToken.js  # Utility for generating tokens (JWT, verification token, etc.)
+│   │   └── emailTemplates.js # Templates for emails sent via Nodemailer
+│   ├── /views
+│   │   └── emails            # Email templates (HTML files)
+│   ├── app.js                # Main Express application file
+│   ├── server.js             # Entry point for the server
+│   └── .env                  # Environment variables (e.g., database URL, email credentials)
+│
+├── /tests
+│   ├── /unit
+│   │   └── authController.test.js  # Unit tests for authController
+│   └── /integration
+│       └── apiRoutes.test.js       # Integration tests for API routes
+│
+├── package.json                # Node.js dependencies and scripts
+├── package-lock.json           # Lockfile for exact dependency versions
+├── README.md                   # Project documentation
+└── .gitignore                  # Files and directories to be ignored by Git
